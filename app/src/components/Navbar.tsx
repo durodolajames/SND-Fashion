@@ -14,7 +14,7 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth({ redirectPath: "/" });
   const { count } = useCart();
 
   const { data: categories = [] } = trpc.category.list.useQuery();

@@ -29,16 +29,19 @@ export function useAuth(options?: UseAuthOptions) {
     retry: false,
   });
 
-  const logout = useCallback(async () => {
-    try {
-      if (supabase) {
-        await supabase.auth.signOut();
-      }
-    } catch {
-      // ignore signOut errors
+  const logout = useCallback(() => {
+    // Optimistically clear auth UI state immediately so logout feels instant.
+    setHasSession(false);
+    setSessionChecked(true);
+    utils.auth.me.setData(undefined, undefined);
+    navigate(redirectPath, { replace: true });
+
+    if (supabase) {
+      void supabase.auth.signOut({ scope: "local" }).catch(() => {
+        // ignore signOut errors; local UI state is already cleared
+      });
     }
-    window.location.href = redirectPath;
-  }, [redirectPath]);
+  }, [navigate, redirectPath, utils.auth.me]);
 
   useEffect(() => {
     if (!supabase) {
