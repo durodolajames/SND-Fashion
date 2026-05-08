@@ -74,7 +74,8 @@ export function useAuth(options?: UseAuthOptions) {
     };
   }, [utils, refetch]);
 
-  const isAuthenticated = hasSession || !!user;
+  const resolvedUser = hasSession ? (user ?? null) : null;
+  const isAuthenticated = hasSession;
   const authLoading = isLoading || !sessionChecked;
 
   useEffect(() => {
@@ -88,13 +89,13 @@ export function useAuth(options?: UseAuthOptions) {
 
   return useMemo(
     () => ({
-      user: user ?? null,
+      user: resolvedUser,
       isAuthenticated,
       isLoading: authLoading,
       error,
       logout,
       refresh: refetch,
     }),
-    [user, isAuthenticated, authLoading, error, logout, refetch],
+    [resolvedUser, isAuthenticated, authLoading, error, logout, refetch],
   );
 }
