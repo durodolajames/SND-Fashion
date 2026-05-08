@@ -31,16 +31,27 @@ export function useAuth(options?: UseAuthOptions) {
     if (supabase) {
       await supabase.auth.signOut();
     }
+    utils.auth.me.setData(undefined, undefined);
     await utils.invalidate();
     navigate(redirectPath);
   }, [utils, navigate, redirectPath]);
 
-  const logoutMutation = trpc.auth.logout.useMutation({
-    onSuccess: async () => {
+  useEffect(() => {
+    if (!supabase) return;
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event) => {
+      if (event === "SIGNED_OUT") {
+        utils.auth.me.setData(undefined, undefined);
+      }
       await utils.invalidate();
-      navigate(redirectPath);
-    },
-  });
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [utils]);
 
   useEffect(() => {
     if (redirectOnUnauthenticated && !isLoading && !user) {
@@ -55,11 +66,11 @@ export function useAuth(options?: UseAuthOptions) {
     () => ({
       user: user ?? null,
       isAuthenticated: !!user,
-      isLoading: isLoading || logoutMutation.isPending,
+      isLoading,
       error,
       logout,
       refresh: refetch,
     }),
-    [user, isLoading, logoutMutation.isPending, error, logout, refetch],
+    [user, isLoading, error, logout, refetch],
   );
 }
