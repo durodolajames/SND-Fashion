@@ -12,6 +12,8 @@ export const env = {
   isProduction: process.env.NODE_ENV === "production",
   databaseUrl: required("DATABASE_URL"),
   supabaseUrl: required("SUPABASE_URL"),
+  supabaseAnonKey:
+    process.env.SUPABASE_ANON_KEY ?? process.env.VITE_SUPABASE_ANON_KEY ?? "",
   // Legacy fields kept optional for backward-compatible compilation.
   appId: process.env.APP_ID ?? "",
   appSecret: process.env.APP_SECRET ?? "",

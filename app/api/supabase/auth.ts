@@ -1,9 +1,9 @@
-import * as jose from "jose";
 import { env } from "../lib/env";
 import { findUserByUnionId, upsertUser } from "../queries/users";
 import type { InsertUser } from "@db/schema";
 
-type SupabaseJwtPayload = jose.JWTPayload & {
+type SupabaseUserResponse = {
+  id: string;
   email?: string;
   user_metadata?: {
     full_name?: string;
@@ -11,17 +11,6 @@ type SupabaseJwtPayload = jose.JWTPayload & {
     avatar_url?: string;
   };
 };
-
-let jwks: ReturnType<typeof jose.createRemoteJWKSet> | null = null;
-
-function getJwks() {
-  if (!jwks) {
-    jwks = jose.createRemoteJWKSet(
-      new URL(`${env.supabaseUrl}/auth/v1/.well-known/jwks.json`),
-    );
-  }
-  return jwks;
-}
 
 function getBearerToken(headers: Headers): string | null {
   const auth = headers.get("authorization");
@@ -42,13 +31,19 @@ export async function authenticateRequest(headers: Headers) {
   }
 
   try {
-    const { payload } = await jose.jwtVerify(token, getJwks(), {
-      issuer: `${env.supabaseUrl}/auth/v1`,
-      audience: "authenticated",
+    const resp = await fetch(`${env.supabaseUrl}/auth/v1/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apikey: env.supabaseAnonKey,
+      },
     });
 
-    const typed = payload as SupabaseJwtPayload;
-    const unionId = typeof typed.sub === "string" ? typed.sub : "";
+    if (!resp.ok) {
+      return null;
+    }
+
+    const typed = (await resp.json()) as SupabaseUserResponse;
+    const unionId = typeof typed.id === "string" ? typed.id : "";
     if (!unionId) {
       return null;
     }
