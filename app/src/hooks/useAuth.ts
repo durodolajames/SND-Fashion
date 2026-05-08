@@ -30,15 +30,15 @@ export function useAuth(options?: UseAuthOptions) {
   });
 
   const logout = useCallback(async () => {
-    if (supabase) {
-      await supabase.auth.signOut();
+    try {
+      if (supabase) {
+        await supabase.auth.signOut();
+      }
+    } catch {
+      // ignore signOut errors
     }
-    setHasSession(false);
-    setSessionChecked(true);
-    utils.auth.me.setData(undefined, undefined);
-    await utils.invalidate();
-    navigate(redirectPath);
-  }, [utils, navigate, redirectPath]);
+    window.location.href = redirectPath;
+  }, [redirectPath]);
 
   useEffect(() => {
     if (!supabase) {
