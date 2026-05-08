@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 30 10% 10%;
+    --card: 40 33% 97%;
+    --card-foreground: 30 10% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 10% 10%;
+    --primary: 24 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 30% 95%;
+    --secondary-foreground: 30 10% 10%;
+    --muted: 40 20% 94%;
+    --muted-foreground: 30 5% 45%;
+    --accent: 40 30% 95%;
+    --accent-foreground: 30 10% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 40 20% 88%;
+    --input: 40 20% 88%;
+    --ring: 24 95% 53%;
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    --background: 30 10% 8%;
+    --foreground: 40 30% 97%;
+    --card: 30 10% 10%;
+    --card-foreground: 40 30% 97%;
+    --popover: 30 10% 10%;
+    --popover-foreground: 40 30% 97%;
+    --primary: 24 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 30 10% 15%;
+    --secondary-foreground: 40 30% 97%;
+    --muted: 30 10% 15%;
+    --muted-foreground: 40 10% 60%;
+    --accent: 30 10% 15%;
+    --accent-foreground: 40 30% 97%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 30 10% 20%;
+    --input: 30 10% 20%;
+    --ring: 24 95% 53%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Ankara pattern stripe for footer */
+.ankara-stripe {
+  background: repeating-linear-gradient(
+    90deg,
+    #c41e3a 0px,
+    #c41e3a 20px,
+    #f4a261 20px,
+    #f4a261 40px,
+    #2a9d8f 40px,
+    #2a9d8f 60px,
+    #e9c46a 60px,
+    #e9c46a 80px,
+    #264653 80px,
+    #264653 100px,
+    #f4a261 100px,
+    #f4a261 120px,
+    #e76f51 120px,
+    #e76f51 140px,
+    #2a9d8f 140px,
+    #2a9d8f 160px
+  );
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for horizontal scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
