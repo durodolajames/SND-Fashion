@@ -12,6 +12,7 @@ export default function Navbar() {
   const [showAnnouncement, setShowAnnouncement] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
   const { count } = useCart();
@@ -170,21 +171,34 @@ export default function Navbar() {
               </Button>
 
               {isAuthenticated ? (
-                <div className="relative group">
-                  <Button variant="ghost" size="icon" className="hidden sm:flex">
+                <div className="relative">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="hidden sm:flex"
+                    onClick={() => setProfileOpen((o) => !o)}
+                  >
                     <User className="w-[18px] h-[18px] text-gray-600" />
                   </Button>
-                  <div className="absolute right-0 top-full mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border z-50">
-                    <div className="px-4 py-2 text-sm font-medium border-b">
-                      {user?.name || "Account"}
-                    </div>
-                    <button
-                      onClick={logout}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:text-black hover:bg-gray-50"
-                    >
-                      Logout
-                    </button>
-                  </div>
+                  {profileOpen && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setProfileOpen(false)}
+                      />
+                      <div className="absolute right-0 top-full mt-1 bg-white shadow-lg rounded-lg py-2 min-w-[160px] border z-50">
+                        <div className="px-4 py-2 text-sm font-medium border-b">
+                          {user?.name || "Account"}
+                        </div>
+                        <button
+                          onClick={() => { setProfileOpen(false); logout(); }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:text-black hover:bg-gray-50"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : (
                 <Button
